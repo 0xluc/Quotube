@@ -5,7 +5,7 @@ from unidecode import unidecode
 
 app = Flask(__name__)
 
-@app.route("/request",methods=['GET'])
+@app.route("/request",methods=['POST'])
 def searchTextInVideo():
     try:
         data = request.get_json()
