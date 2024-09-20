@@ -2,6 +2,7 @@
     import { Input } from "@/components/ui/input";
     import { Label } from "@/components/ui/label";
     import { Button } from "@/components/ui/button";
+    import LoaderCircle from "lucide-svelte/icons/loader-circle";
     import * as Select from "@/components/ui/select/index.js";
 
     const languages = [
@@ -16,11 +17,20 @@
     let video = "";
     let text = "";
     let language = "";
-    let result = "";
+    let results: any[] = [];
+    let error = "";
+    let loading = false;
     $: isFormComplete =
         video.trim() !== "" && text.trim() !== "" && language.trim() !== "";
 
+    function secondsToTimeFormat(seconds: number) {
+        let date = new Date(0);
+        date.setSeconds(seconds);
+        const timeString = date.toISOString().substring(11, 19);
+        return timeString;
+    }
     async function handleSubmit(event: Event) {
+        loading = true;
         event.preventDefault();
 
         try {
@@ -39,18 +49,20 @@
             });
 
             if (!response.ok) {
-                result = "failed to search for the text";
+                error = "failed to search for the text";
                 return;
             }
 
-            const data = await response.json(); // Handle the response
-            if (data.moments.length == 0) {
-                result = "no text found";
+            results = await response.json(); // Handle the response
+            if (results.length == 0) {
+                error = "no text found";
                 return;
             }
-            console.log(data);
-            result = JSON.stringify(data);
+            console.log(results);
+            loading = false;
         } catch (error) {
+            loading = false;
+            error = "failed to search for the text";
             console.error(error);
         }
     }
@@ -133,9 +145,25 @@
                     <Select.Input name="favoriteFruit" />
                 </Select.Root>
 
-                <Button disabled={!isFormComplete} type="submit">Search</Button>
+                <Button disabled={!isFormComplete || loading} type="submit">
+                    {#if loading}
+                        <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
+                        Please wait
+                    {:else}
+                        Search
+                    {/if}
+                </Button>
             </section>
-            <h3>{result}</h3>
+            <section
+                class="mx-auto flex max-w-[500px] flex-row justify-between items-start gap-2 py-2 md:py-12 md:pb-8 lg:py-2 lg:pg-20"
+            >
+                {#each results as result}
+                    <Button
+                        >{secondsToTimeFormat(Math.trunc(result.start))}</Button
+                    >
+                {/each}
+            </section>
+            <h3>{error}</h3>
         </form>
     </div>
 </div>
