@@ -20,17 +20,8 @@ def searchTextInVideo():
         subs = yttapi.get_transcript(youtubeUrl, languages=[language])
         filtered_dicts = filter_dicts(subs, text)
         print(filtered_dicts)
-        texts, moments = [], []
-        for d in filtered_dicts:
-            texts.append(d['text'])
-            moments.append(d['start'])
-        result = {
-                "texts":texts,
-                "moments": moments
-        }
-        print(result)
- 
-        return jsonify(result), 200
+        
+        return jsonify(filtered_dicts), 200
     except Exception as e:
         print(e)
         return "Error, text not found", 404
