@@ -2,8 +2,11 @@ from flask import Flask, request, jsonify
 from youtube_transcript_api import YouTubeTranscriptApi as yttapi
 import re
 from unidecode import unidecode
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)
 
 @app.route("/request",methods=['POST'])
 def searchTextInVideo():
