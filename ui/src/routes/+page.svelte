@@ -1,9 +1,11 @@
 <script lang="ts">
+    import { Card } from "@/components/ui/card";
     import { Input } from "@/components/ui/input";
     import { Label } from "@/components/ui/label";
     import { Button } from "@/components/ui/button";
     import LoaderCircle from "lucide-svelte/icons/loader-circle";
     import * as Select from "@/components/ui/select/index.js";
+    import CardTitle from "@/components/ui/card/card-title.svelte";
 
     const languages = [
         { value: "pt", label: "Portuguese" },
@@ -30,6 +32,7 @@
         return timeString;
     }
     async function handleSubmit(event: Event) {
+        error = "";
         loading = true;
         event.preventDefault();
 
@@ -155,15 +158,29 @@
                 </Button>
             </section>
             <section
-                class="mx-auto flex max-w-[500px] flex-row justify-between items-start gap-2 py-2 md:py-12 md:pb-8 lg:py-2 lg:pg-20"
+                class="mx-auto flex max-w-[500px] flex-col justify-between items-start gap-2 py-2 md:py-12 md:pb-8 lg:py-2 lg:pg-20"
             >
                 {#each results as result}
-                    <Button
-                        >{secondsToTimeFormat(Math.trunc(result.start))}</Button
+                    <Card
+                        class="mx-auto w-full flex-row flex justify-between p-4 items-center"
                     >
+                        <h4
+                            class="scroll-m-20 text-md font-semibold tracking-tight p-2"
+                        >
+                            <q>{result.text}</q>
+                        </h4>
+                        <Button
+                            target="_black"
+                            href={video + "&t=" + Math.trunc(result.start)}
+                            >{secondsToTimeFormat(
+                                Math.trunc(result.start),
+                            )}</Button
+                        >
+                    </Card>
                 {/each}
+
+                <h3>{error}</h3>
             </section>
-            <h3>{error}</h3>
         </form>
     </div>
 </div>
