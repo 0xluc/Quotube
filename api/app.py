@@ -17,8 +17,6 @@ def searchTextInVideo():
         language = data['language']
         match = re.search(r'(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})',video)
         youtubeUrl = match.groups()[0]
-        res = yttapi.list_transcripts(youtubeUrl)
-        #print(res)
         subs = yttapi.get_transcript(youtubeUrl, languages=[language])
         filtered_dicts = filter_dicts(subs, text)
         print(filtered_dicts)

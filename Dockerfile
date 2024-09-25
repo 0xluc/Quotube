@@ -1,4 +1,3 @@
-# Svelte Dockerfile
 FROM node:21 AS build
 
 WORKDIR /app
