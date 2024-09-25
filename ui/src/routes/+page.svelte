@@ -32,6 +32,7 @@
         return timeString;
     }
     async function handleSubmit(event: Event) {
+        results = [];
         error = "";
         loading = true;
         event.preventDefault();
@@ -43,7 +44,7 @@
                 language: language,
             };
 
-            const response = await fetch("http://127.0.0.1:5000/request", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -52,21 +53,21 @@
             });
 
             if (!response.ok) {
-                error = "failed to search for the text";
+                loading = false;
+                error = await response.text();
                 return;
             }
 
             results = await response.json(); // Handle the response
             if (results.length == 0) {
+                loading = false;
                 error = "no text found";
                 return;
             }
-            console.log(results);
             loading = false;
         } catch (error) {
             loading = false;
             error = "failed to search for the text";
-            console.error(error);
         }
     }
 </script>
@@ -178,8 +179,9 @@
                         >
                     </Card>
                 {/each}
-
-                <h3>{error}</h3>
+                {#if error}
+                    <h3>Error: {error}</h3>
+                {/if}
             </section>
         </form>
     </div>

@@ -1,0 +1,19 @@
+services:
+  flask:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    volumes:
+      - ./api:/app
+    expose:
+      - "5000"
+    restart: on-failure
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "83:80"
+    depends_on:
+      - flask
+    restart: on-failure
